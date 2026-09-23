@@ -75,40 +75,38 @@ app.delete("/admin/:id",(req,res)=>{
     }
 })
 
-app.patch("/admin",(req,res)=>{
+app.patch("/admin", (req, res) => {
 
-    // Add item to food menu 
-    // Authenticate karna padega ki kya ye admin hi hai 
-    // dummy code
-    let token = 'ABCDF'
-    let Access = token = "ABCD" ?1:0;
+    let token = "ABCD";
 
-    if(Access){
-        
-        const id = req.body.id;
+    let access = token === "ABCD";
 
-        const foodData = FoodMenu.find(item => item.id===id)
-
-        if(foodData){
-            if(req.body.food)
-                foodData.food === req.body.FoodMenu;
-            if(req.body.category)
-                foodData.category === req.body.category;
-            if(req.body.price)
-                foodData.price === req.body.price;
-
-            res.send("successfully Updated")
-
-        }else{
-            res.send("Item not exist");
-        }
-    }
-    else{
-        res.status(403).send("No permission")
+    if (!access) {
+        return res.status(403).send("No permission");
     }
 
-})
+    const id = req.body.id;
 
+    const foodData = FoodMenu.find(item => item.id === id);
+
+    if (!foodData) {
+        return res.status(404).send("Item does not exist");
+    }
+
+    if (req.body.food) {
+        foodData.food = req.body.food;
+    }
+
+    if (req.body.category) {
+        foodData.category = req.body.category;
+    }
+
+    if (req.body.price) {
+        foodData.price = req.body.price;
+    }
+
+    res.send("Successfully Updated");
+});
 
 
 
