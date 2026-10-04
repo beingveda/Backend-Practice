@@ -16,7 +16,9 @@ const  createNotesController = async(req,res)=>{
     })
     
    } catch (error) {
-    console.log("Error in creation at POST Api")
+     return res.status(500).json({
+            message: "Internal server error",
+        });
    }
 };
 
@@ -28,8 +30,71 @@ const getNotesController = async (req,res)=>{
             data : allNotes,
         })
     } catch (error) {
-        console.log("error while fetching api",error);
+         return res.status(500).json({
+            message: "Internal server error",
+        });
     }}
 
-module.exports = createNotesController;
-module.exports = getNotesController;
+const getSingleNoteController = async (req,res)=>{
+    try {
+        let noteId = req.params.id;
+
+        let note = await NotesModel.findById(noteId);
+
+        res.status(200).json({
+            message: "Notes fetched successfully",
+            data: note,
+        })
+    } catch (error) {
+         return res.status(500).json({
+            message: "Internal server error",
+        });
+    }
+}
+
+const updateNotesController = async (req,res)=>{
+    try {
+
+        let noteId = req.params.id;
+        let body = req.body;
+
+        let updatedNote = await NotesModel.findByIdAndUpdate(noteId, body)
+
+        return res.status(200).json({
+            message: "Note updated successfully",
+            data : updatedNote,
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error",
+        });
+    }
+}
+
+const deleteNoteController = async(req,res)=>{
+    try {
+        
+        let noteId = req.params.id;
+
+        let deleteNote = await NotesModel.findByIdAndDelete(noteId);
+
+        return res.status(200).json({
+            message: "Note deleted successfully",
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            message:"Internal Server Error",
+        })
+    }
+}
+
+
+
+
+module.exports = {createNotesController, 
+                  getNotesController, 
+                  getSingleNoteController,
+                  updateNotesController,
+                  deleteNoteController};
